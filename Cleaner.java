@@ -3,6 +3,7 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import org.apache.commons.io.FileUtils;
 
 /**
  * Program made to clean your files (MAC version).
@@ -13,7 +14,7 @@ import java.io.IOException;
 public class Cleaner 
 {
     public static char init() {
-        System.out.println("\fWelcome to File Valet the program made to clean your files!");
+        System.out.println("\fWelcome to FileValet the program made to clean your files!");
         System.out.print("Would you like us to clean your desktop (Y/n): ");
         Scanner keyboard = new Scanner(System.in);
         char input = keyboard.next().charAt(0);
@@ -28,25 +29,29 @@ public class Cleaner
             FilenameFilter textFilter = new FilenameFilter() {
                     public boolean accept(File dir, String name) {
                         String lowercaseName = name.toLowerCase();
-                        if (lowercaseName.startsWith("#z")) {
-                            System.out.println("The following files were found and are being cleaned.");
+                        if (lowercaseName.contains("#z")) {
                             return true;
                         } else {
-                            System.out.println("No files were found to be cleaned.");
                             return false;
                         }
                     }
                 };
+            System.out.println("The following files were found and are being cleaned.");
             File[] files = dir.listFiles(textFilter);
             for (File file : files) {
                 if (file.isDirectory()) {
                     System.out.print("directory:");
                 } else {
                     System.out.print("file:");
+                    System.out.println(file.getCanonicalPath());
                 }
-                System.out.println(file.getCanonicalPath());
+                File sourceFile = new File(file.getCanonicalPath());
+                File destinationFile = new File("/Users/grantgoldenberg/Documents/FileValet/" + file.getName());
+                FileUtils.moveFile(sourceFile, destinationFile);
             }
+            System.out.println("Cleaning complete!");
         }
+        
         else {
             System.out.println("Okay, closing the program...");
             System.exit(0);    
